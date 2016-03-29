@@ -1,0 +1,561 @@
+一、Linux主要组成部分
+
+	Linux内核
+	
+		系统内存管理
+		
+			交换空间（swap space）:内核不断的在交换空间和实际物理内存之间交换虚拟内存位置的内容	
+			分页（page）：内存位置分组为多个数据块
+			换出：内核跟踪使用的内存分页，并自动将一段时间没有访问的内存分页复制到交换空间
+			/proc/meminfo 虚拟内存的当前状态
+			ipcs -m 查看系统当前的共享内存分页
+
+		软件程序管理
+		
+			进程：操作系统正在运行的程序
+			初始进程：内核创建的第一个进程
+			/etc/inittabs 引导启动进程表
+			Linux具有5个初始运行级别
+				1	启动基本系统进程，以及一个控制台终端进程
+				3 标准初始运行级别，可以启动大部分应用软件
+				5	启动图形化软件
+			ps ax 查看当前运行的进程
+				S	表示休眠
+				SW	表示休眠并等待
+				R	表示运行
+				[] 表示该进程已经不活动，被换出到交换空间
+				
+		硬件管理
+		
+			Linux系统需要与之通信的设备都必须在内核代码中插入驱动程序代码，使内核能够向设备传输数据
+				在内核中编译驱动程序
+				向内核添加驱动程序模块
+			设备文件
+				字符：
+					一次仅处理一个字符的设备
+				块：
+					一次可处理大量数据块的设备
+				网络：
+					使用数据包发送和接收的设备
+			节点：系统为每个设备创建特殊文件
+		
+		
+		文件系统管理
+			内核使用虚拟文件系统（Virtual File System)与每个文件系统进行连接
+			
+		
+	GNU实用程序
+		
+		*****核心GNU实用程序（GNU coreutils)
+			处理文件的实用程序
+			操作文本的实用程序
+			管理进程的实用程序
+			
+		shell
+			bash shell（bourne again shell）
+		
+		
+	图形桌面环境
+		X Windows系统
+		KDE桌面环境
+		GNOME桌面
+		
+	应用软件
+	
+二、shell
+	终端模拟
+		文本命令行界面（Commond Line Interface)只允许文本输入，并且只能显示文本和基本的图形输出
+	图形功能
+		字符集
+			ASCII 美国信息交换标准码
+			ISO-10646	UNICODE
+			
+			
+三、基本的bash shell命令（文件、目录操作）
+	cd 切换目录
+	ls 列出目录列表
+		-F	显示文件夹标志/
+		-a	显示全部文件包括隐藏文件，以.开头的文件
+		-R	递归查看所有文件目录
+		-l	生成长格式列表
+	touch 创建空文件，修改文件属性
+		-a 修改文件访问时间
+		-m 更改修改时间
+		-t 指定时间
+	cp	复制
+		-a 归档文件，保留属性
+		-b 为目标文件创建备份
+		-d 保留
+		-f 强制覆盖
+		-l 创建连接文件，硬链接
+		-s 创建软链接文件
+		-p *保留文件属性
+		-r 递归复制文件
+		-R 递归复制目录
+		-u 在source文件比destination新时复制
+	stat	查看文件状态信息
+	cat	显示文本内容
+		-n 显示行编号
+		-b 只为带文本的行编号
+	tail	显示文本最后十行内容
+		-f 持续更新文件新行
+	
+		
+四、更多shell命令
+	进程
+		ps 显示进程信息
+			-e 显示全部进程
+			-l 显示长列表
+			-f 显示完整的格式列表
+		top 显示实时进程信息
+		
+		进程通信信号
+			1	HUP	挂起
+			2	INT	中断
+			3	QUIT	停止运行
+			9	KILL	强制终止
+			11	SEGV	段违例
+			15	TERM 条件终止
+			17 STOP	强制停止，但未终止
+			18	TSTP	停止或暂停，但继续在后台运行
+			19	COUT	恢复执行
+			
+		kill 结束进程
+			kill PID
+			-s 指定其他信号 TERM, HUP, INT, KILL(会对文件造成破坏)
+		killall 可以指定进程名称和通配符
+	
+	挂载
+		mount 挂载介质
+		手动挂载
+			mount -t type device directory
+				type:
+					ntfs
+					iso9660 CD-ROM
+		umount 卸载介质
+		
+		df	查看所有已挂载磁盘的使用情况
+		du	显示当前目录下目录和文件的磁盘使用情况
+	
+	操作文件
+		sort 排序
+			-n 将数字字符识别为数字进行排序
+			-M 识别十二个月的大写前三个字母
+			-t 指定分隔字符
+			-k指定排序的字段 -k index
+				sort -t ":" -k 3 -n /etc/passwd
+			-r 反序排列
+			
+	搜索数据
+		grep [options] pattern [file]
+			-v 反转搜素
+			-n 获取匹配数据所在地行号
+			-c 匹配行数
+			-e 匹配多个模式
+			pattern可为正则表达式
+	
+	压缩数据
+		bzip2 
+			bzip2 压缩文件
+			bzcat 查看压缩文件
+			bunzip2 解压.bz2的压缩文件
+			bzip2recover 尝试恢复受损的压缩文件
+		gzip
+			gzip 压缩文件
+			gzcat 查看压缩文件
+			gunzip 解压
+		zip 可将整个目录压缩为一个文件
+			zip 创建包含列出文件和目录的压缩文件
+			zipcloak 创建加密文件
+			zipnote 提取注释
+			zipsplit 将zip文件分隔成指定大小的多个小文件
+			unzip 解压
+		*tar
+			tar function [options] object ...
+				-A 将已有tar文件添加到另一个tar文件中
+				-c 创建一个新文件
+				-d 删除文件
+				-r 向文件中添加文件
+				-t 列出现有tar文件内容
+				-u 更新文件
+				-x 解压文件
+				-f 输出结果到文件
+				-p 保留文件权限
+				-v 处理过程列出文件列表
+				-j 将输出重定向到bzip进行压缩
+				-z 将输出重定向到gzip进行压缩
+				
+				 tar -cvf  file.tar file...压缩文件
+				 tar -tf 列出文件
+				 tar -xvf 解压文件
+				 
+				 
+五、环境变量
+	bash shell中有两种环境变量
+		全局变量
+		本地变量
+		
+	printenv 打印系统全局环境变量
+		echo $v 打印对应环境变量值
+	set 显示特定环境中的全部环境变量
+	
+	创建环境变量
+		test=test1
+		test='this is test2'
+		echo $test
+	创建全局变量
+		export test
+	删除环境变量
+		unset test 移除环境变量只对当前会话有效
+		
+	定位系统环境变量
+		登录shell
+			/etc/profile
+			$HOME/.bash_profile
+			$HOME/.bash_login
+			$HOME/.profile
+		交互shell
+			输入bash打开的shell为交互式shell，不处理/etc/profile
+			
+	变量数组
+		test=(test1 test2 test3 test4 test5 test6)
+		ehco $test{[0]}
+		unset test[n]
+		
+	命令别名
+		alias
+			-p 显示活动的别名列表
+			alias commond='commond options'
+			
+		
+六、文件权限
+	
+	/etc/passwd存放用户列表，密码存放在/etc/shadow
+	
+	添加用户
+		useradd
+			-D 显示系统默认值
+			
+	删除用户
+		userdel
+			删除用户，不删除用户文件
+			-r 删除用户并删除用户文件
+			
+	用户修改
+		usermod 编辑用户账户字段，以及指定主要和次要用户组成员
+			-l 修改登录名
+			-L 锁定用户
+			-p 修改账户的密码
+			-U 解锁用户
+		passwd	修改已有用户的密码
+			-e 强制用户下次登录时更换密码
+		chpasswd	设置登录用户名和密码对文件，并更新密码
+		chage	修改密码的逾期日期
+			-d 设置距离上次被修改天数
+			-E 设置密码逾期日期
+			-I 设置账户密码逾期被锁后处于不活动天数
+			-m 设置两次修改密码之间最小天数
+			-W 设置警告信息在密码逾期前多少天出现
+		chfn	修改用户账户的注释信息
+		chsh	修改用户账户的默认shell
+			
+			
+	用户组
+		/etc/group存放用户组信息
+		
+		groupadd 添加用户组
+			usermod -G 修改用户的用户组属性
+		groupmod 修改用户组
+			-n 修改名称
+			-G 修改GID
+	
+	文件权限
+		rwx 读写执行
+		umask 权限掩码 默认0022，首位为粘着位
+		
+		修改权限
+			chmod options mode file
+				[ugoa...][+-=][rwxXstugo...]
+				u 用户
+				g 用户组
+				o 其他用户
+				a 所有用户
+				-R 迭代修改子文件权限
+		
+		修改所有者
+			chown options owener[.group] file
+			 -R 迭代修改
+			 -h 修改符号关联文件
+			chgrp 修改用户默认组
+			
+	共享文件
+		Linux文件有3个额外的信息位
+			SUID
+			SGID
+			粘着位
+			chmod u+s
+			
+
+八、shell脚本基础
+
+	创建脚本文件
+		#!/bin/bash
+		shell...
+		
+	执行脚本文件
+		添加PATH环境变量或者使用路径，并增加权限
+			chmod u+x test
+			./test
+	echo 显示信息
+		-n 命令结果直接显示在提示后面
+		
+	反引号
+		波浪号下面就是反引号`
+		将反引号内命令的结果值赋给变量值
+		
+	重定向
+		输出重定向
+			>重定向到文件
+			>>重定向到文件尾行
+		输入重定向
+			commond < file将内容重定向到命令中进行处理
+				wc 计数，行数，单词数，字节数
+			commond << marker 内置输入重定向
+			data
+			marker
+				开始和结束相同
+				
+	管道
+		commond1 | commond2...
+			命令1的结果立即输入到命令2进行处理，无限制
+			
+	数学计算
+		expr 只能处理整型
+		$[expression]
+		bc bash计算器
+			-q不现实版本信息
+			scale 设置小数位，默认为0
+			
+	退出脚本
+		退出状态 0~255
+		$? 获取退出状态值
+		退出状态码
+			0			命令成功完成
+			1			未知错误
+			2			误用shell命令
+			126		无法执行
+			127		没有找到命令
+			128		无效的退出参数
+			128+x	使用Linux信号x的致命错误
+			130		使用ctrl+c终止命令
+			255		规范外的退出状态
+			
+			
+九、结构化命令
+	if-then ：if后语句退出状态为0时执行then语句
+		if commond
+		then
+			commonds
+		fi
+			if commond; then 
+				commonds
+			fi
+			
+	if-then-else
+		if commond
+		then
+			commonds
+		else
+			commonds
+		fi
+		
+	嵌套if语句
+		if commond1
+		then
+			commonds
+		elif commond2
+		then
+			more commonds
+		fi
+		
+	test
+		test condition
+		[ condition ]
+		
+		评估3类条件
+			数值比较
+				-eq equal 等于
+				-ge greater equal 大于等于
+				-gt greater than 大于
+				-le 小于等于
+				-lt 小于
+				-ne 不等于
+				
+			字符串比较：大于小于要转义；大于小于顺序与sort相关
+				= 相同
+				!= 不相同
+				<	大于
+				> 小于
+				-n 长度大于0
+				-z 长度为0
+				
+			文件比较
+				-d	存在并是目录
+				-e	存在
+				-f	存在并文件
+				-r	read
+				-s	文件存在不为空
+				-w	write
+				-x	可执行
+				-O	为当前用户所拥有
+				-G	为当前用户组
+				-nt 新
+				-ot	旧
+		
+	复合条件
+		[ condition1 ] && [ condition2 ]
+		||
+		
+	(( expression )) 数学表达式
+		++
+		--
+		！
+		~	逐位取反
+		** 取幂
+		<<
+		>>
+		&
+		|
+		&&
+		||
+		
+	[[ expression ]] 字符串模式匹配正则表达式
+	
+	case
+		case variable in
+		pattern1 | pattern2) commonds;;
+		pattern3) commonds;;
+		*) default commonds;;
+	esac
+	
+	
+十、更多结构化
+	循环for
+		for var in list
+		do 
+			commonds
+		done
+		
+	内部字段分隔符IFS(internal field seperator)
+		IFS=$'\n'
+		IFS=:
+		IFS=$'\n':;"
+		
+	通配符
+		*
+	
+	c语言中for形式
+		for (( variable assignment ; condition ; iteration process ))
+			变量的赋值可以包含空格
+			条件中的变量不以美元符号开头
+			迭代处理式不使用expr命令格式
+			
+	while:允许多条条件语句，以最后一条为判断条件
+		while test commond
+		do
+			other commonds
+		done
+		
+	until
+		until test commonds
+		do
+			other commonds
+		done
+		
+	控制循环
+		break n 跳出n级循环
+		continue n
+		
+	循环输出
+		done > file
+		
+
+十一、处理用户输入
+	命令行参数
+		$1~9
+		${10+}获取参数
+		$0 命令名称：程序完整路径
+			basename $0 获取命令名称
+			
+	特殊参数
+		$# 参数计数：返回输入参数的个数
+			${!#} 得到最后一个参数值（不可在大括号中使用美元符号）
+		$* 获取所有参数为一个参数
+		$@ 迭代遍历每一个参数，与循环使用
+		
+	移位
+		shift n 左移参数：删除左边的n个参数
+		
+	处理选项
+		getopt	接收任意形式的命令行选项和参数列表，并自动转化为适当的格式；无法处理带有空格的参数
+			getopt options optstring parameters
+			optstring 选项字符串：定义有效选项字符和哪些选项需要参数
+				exam: getopt ab:cd -a -b test1 -c -d test2 test3
+							-a -b test1 -c -d -- test2 test3
+				-q 忽略错误信息
+			set -- 将命令行参数替换为set命令中的值
+			
+		getopts 顺序对现有参数进行迭代处理，可以很好的处理空格，且case不需加-，并将未定义选项同意输出为?，并且不处理参数
+			getopts 	optstring variable
+				:开头表示忽略错误信息
+				环境变量
+					OPTARG 选项所需参数值
+					OPTIND 停止处理时参数列表的位置，默认值为1，每次迭代+1
+	
+	读取输入
+		read
+			read variable
+				variable接收输入值
+				不指定变量时，将输入值保存在环境变量REPLY中
+			-n 抑制换行 1 限制字数
+			-p 输入提示
+			-t 计时器：限定时间s
+			-s 隐藏输入
+			cat file | while read line
+			
+			
+十二、显示数据
+	文件描述符(file descriptor):
+		0	STDIN		标准输入
+		1	STDOUT	标准输入
+		2	STDERR	标准错误
+		
+	重定向
+		n<|>
+			&>将错误和数据重定向到同一个地方
+		
+	脚本中重定向
+		临时
+			>&n
+		永久
+			exec n<|>
+	
+	--shell最多可以打开9个文件描述符
+	自定义重定向3~8
+		exec 3~8<|>
+		重定向文件描述符
+			exec n<|>&n
+				
+	创建读取/写入
+		shell 维护一个内部指针，在指针处覆盖当前数据
+	
+	关闭文件描述符
+		exec n>&-
+		lsof 查看打开的文件描述符
+			-p 指定PID
+			-d 指定文件描述符
+			-a 连接各个选项结果
+			$$ 显示PID
+			
+	空文件
+		/dev/null
